@@ -1,9 +1,8 @@
 package fr.polytech.archiserv.tp3.swapi;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import fr.polytech.archiserv.tp3.swapi.data.*;
 import fr.polytech.archiserv.tp3.swapi.data.Character;
-import fr.polytech.archiserv.tp3.swapi.data.SwapiPeopleResults;
-import fr.polytech.archiserv.tp3.swapi.data.SwapiResults;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -18,6 +17,12 @@ public class SwapiClient {
 
     private Client client = ClientBuilder.newClient().register(JacksonJsonProvider.class);
 
+    public int countMovies(){
+        WebTarget target = client.target(SWAPI_URL + "films/");
+        Invocation.Builder builder = target.request();
+        SwapiResults<Movie> response = builder.get(SwapiMoviesResults.class);
+        return response.getCount();
+    }
 
     public List<Character> getAllCharacters() {
         List<Character> characters = new ArrayList<>();
@@ -43,6 +48,9 @@ public class SwapiClient {
 
         SwapiClient swapiClient = new SwapiClient();
 
+        System.out.println("number of movies : " + swapiClient.countMovies());
+
+        System.out.println("character names :");
         for(Character c : swapiClient.getAllCharacters())
             System.out.println(c.getName());
     }
